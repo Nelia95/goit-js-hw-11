@@ -1,2 +1,26 @@
 @import './common';
-@import './example';
+header {
+  display: flex;
+  justify-content: center;
+  background-color: pink;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+btn-search {
+  background-color: #fff;
+  border-radius: 50px;
+}
+gallery {
+  display: flex;
+  gap: 30px;
+}
+photo-card {
+  display: block;
+  width: 324px;
+}
+photo {
+  width: 100%;
+}
+info {
+  display: flex;
+}
