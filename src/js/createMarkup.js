@@ -14,16 +14,16 @@ export function createMarkup(photos) {
   <img src="${webformatURL}" alt="${tags}" loading="lazy" class="photo" />
   <div class="info">
     <p class="info-item">
-      <b>Likes: ${likes}</b>
+      <b class="info-item-text">Likes ${likes}</b>
     </p>
     <p class="info-item">
-      <b>Views: ${views}</b>
+      <b class="info-item-text">Views ${views}</b>
     </p>
     <p class="info-item">
-      <b>Comments: ${comments}</b>
+      <b class="info-item-text">Comments ${comments}</b>
     </p>
     <p class="info-item">
-      <b>Downloads: ${downloads}</b>
+      <b class="info-item-text">Downloads ${downloads}</b>
     </p>
   </div>
 </div></a>`;

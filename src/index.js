@@ -2,8 +2,39 @@ import { PixabayApi } from './js/fetchClass';
 import { refs } from './js/refs';
 import { createMarkup } from './js/createMarkup';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const pixabay = new PixabayApi();
+
+// const options = {
+//   root: null,
+//   rootMargin: '150px',
+//   threshold: 1.0,
+// };
+// const callback = function (entries, observer) {
+//   entries.forEach(entry => {
+//     if (entry.isIntersecting && entry.intersectionRect.bottom > 550) {
+//       console.log(entry.intersectionRect);
+
+//       pixabay.incrementPage();
+//       console.log(pixabay);
+//       if (!pixabay.isShowLoadMore) {
+//         observer.unobserve(entry.target);
+//       }
+//       pixabay.getPhotos().then(({ hits }) => {
+//         const markup = createMarkup(hits);
+//         refs.gallery.insertAdjacentHTML('beforeend', markup);
+//         lightbox.refresh();
+//         scrollPage();
+//       }).catch(error => {
+//         Notify.failure(error.message);
+//         clearPage();
+//       });
+//     }
+//   }
+// }
+// const observer = new IntersectionObserver(callback, options);
 
 async function searchPhotos(event) {
   event.preventDefault();
@@ -20,7 +51,7 @@ async function searchPhotos(event) {
   clearPage();
 
   try {
-    const { hits, total } = await pixabay.getPhotos();
+    const { hits, totalHits } = await pixabay.getPhotos();
     if (hits.length === 0) {
       Notify.info(
         'Sorry, there are no images matching your search query. Please try again.'
@@ -29,14 +60,22 @@ async function searchPhotos(event) {
     }
     const markup = createMarkup(hits);
     refs.gallery.insertAdjacentHTML('beforeend', markup);
+    // const target = document.querySelector('.photo-link:last-child');
+    // console.log(target);
+    // observer.observe(target);
 
-    pixabay.calculateTotalPages(total);
+    pixabay.calculateTotalPages(totalHits);
 
-    Notify.success(`Hooray! We found ${total} images.`);
+    Notify.success(`Hooray! We found ${totalHits} images.`);
+    lightbox.refresh();
 
     if (pixabay.isShowLoadMore) {
       refs.loadMoreBtn.classList.remove('.is-hidden');
+      console.log(refs.loadMoreBtn);
+      // const target = document.querySelector('.photo-link:last-child');
+      // observer.observe(target);
     }
+    scrollPage();
   } catch (error) {
     Notify.failure(error.message);
     clearPage();
@@ -52,6 +91,8 @@ const onLoadMore = async () => {
     const { hits } = await pixabay.getPhotos();
     const markup = createMarkup(hits);
     refs.gallery.insertAdjacentHTML('beforeend', markup);
+    lightbox.refresh();
+    scrollPage();
   } catch (error) {
     Notify.failure(error.message);
     clearPage();
@@ -65,4 +106,16 @@ function clearPage() {
   pixabay.resetPage();
   refs.gallery.innerHTML = '';
   refs.loadMoreBtn.classList.add('.is-hidden');
+}
+const lightbox = new SimpleLightbox('.gallery a');
+
+function scrollPage() {
+  const { height: cardHeight } = document
+    .querySelector('.gallery')
+    .firstElementChild.getBoundingClientRect();
+
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
 }

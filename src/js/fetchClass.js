@@ -6,7 +6,7 @@ axios.defaults.baseURL = 'https://pixabay.com/api';
 export class PixabayApi {
   #page = 1;
   #query = '';
-  #totalPages = 0;
+  #allTotalPages = 0;
   #perPage = 40;
   #params = {
     params: {
@@ -42,10 +42,10 @@ export class PixabayApi {
   }
 
   calculateTotalPages(total) {
-    this.#totalPages = Math.ceil(total / this.#perPage);
+    this.#allTotalPages = Math.ceil(total / this.#perPage);
   }
 
   get isShowLoadMore() {
-    return this.#page < this.#totalPages;
+    return this.#page < this.#allTotalPages;
   }
 }
