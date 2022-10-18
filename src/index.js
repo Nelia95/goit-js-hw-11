@@ -7,79 +7,79 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const pixabay = new PixabayApi();
 
-// const options = {
-//   root: null,
-//   rootMargin: '150px',
-//   threshold: 1.0,
-// };
-// const callback = async function (entries, observer) {
-//   entries.forEach(async entry => {
-//     console.log(entry);
-//     if (entry.isIntersecting) {
-//       console.log(entry.isIntersecting);
-//       pixabay.incrementPage();
-//       observer.unobserve(entry.target);
-
-//       if (!pixabay.isShowLoadMore) {
-//         observer.unobserve(entry.target);
-//       }
-//       try {
-//         const { hits } = await pixabay.getPhotos();
-//         const markup = createMarkup(hits);
-//         refs.gallery.insertAdjacentHTML('beforeend', markup);
-
-//         if (pixabay.isShowLoadMore) {
-//           console.log(pixabay.isShowLoadMore);
-//           const target = document.querySelector('.photo-link:last-child');
-//           observer.observe(target);
-//         }
-
-//         lightbox.refresh();
-//         scrollPage();
-//       } catch (error) {
-//         Notify.failure(error.message);
-//         clearPage();
-//       }
-//     }
-//   });
-// };
-
 const options = {
   root: null,
   rootMargin: '150px',
   threshold: 1.0,
 };
-const callback = function (entries, observer) {
-  entries.forEach(entry => {
+const callback = async function (entries, observer) {
+  entries.forEach(async entry => {
     if (entry.isIntersecting && entry.intersectionRect.bottom > 550) {
-      console.log(entry.intersectionRect);
+      console.log(entry.isIntersecting);
+      pixabay.incrementPage();
       observer.unobserve(entry.target);
 
-      pixabay.incrementPage();
-      console.log(pixabay);
       // if (!pixabay.isShowLoadMore) {
       //   observer.unobserve(entry.target);
       // }
-      if (pixabay.isShowLoadMore) {
-        console.log(pixabay.isShowLoadMore);
-        const target = document.querySelector('.photo-link:last-child');
-        observer.observe(target);
+      try {
+        const { hits } = await pixabay.getPhotos();
+        const markup = createMarkup(hits);
+        refs.gallery.insertAdjacentHTML('beforeend', markup);
+
+        if (pixabay.isShowLoadMore) {
+          console.log(pixabay.isShowLoadMore);
+          const target = document.querySelector('.photo-link:last-child');
+          observer.observe(target);
+        }
+
+        lightbox.refresh();
+        scrollPage();
+      } catch (error) {
+        Notify.failure(error.message);
+        clearPage();
       }
-      pixabay
-        .getPhotos()
-        .then(({ hits }) => {
-          const markup = createMarkup(hits);
-          refs.gallery.insertAdjacentHTML('beforeend', markup);
-          lightbox.refresh();
-          scrollPage();
-        })
-        .catch(error => {
-          Notify.failure(error.message);
-          clearPage();
-        });
     }
   });
 };
+
+// const options = {
+//   root: null,
+//   rootMargin: '150px',
+//   threshold: 1.0,
+// };
+// const callback = function (entries, observer) {
+//   entries.forEach(entry => {
+//     if (entry.isIntersecting && entry.intersectionRect.bottom > 550) {
+//       console.log(entry.intersectionRect);
+//       pixabay.incrementPage();
+//       observer.unobserve(entry.target);
+
+//       console.log(pixabay);
+//       // if (!pixabay.isShowLoadMore) {
+//       //   observer.unobserve(entry.target);
+//       // }
+
+//       pixabay
+//         .getPhotos()
+//         .then(({ hits }) => {
+//           const markup = createMarkup(hits);
+//           refs.gallery.insertAdjacentHTML('beforeend', markup);
+//           if (pixabay.isShowLoadMore) {
+//             console.log(pixabay.isShowLoadMore);
+//             const target = document.querySelector('.photo-link:last-child');
+//             observer.observe(target);
+//           }
+//           lightbox.refresh();
+//           scrollPage();
+//         })
+//         .catch(error => {
+//           Notify.failure(error.message);
+//           clearPage();
+//         });
+//     }
+//   });
+// };
 
 const observer = new IntersectionObserver(callback, options);
 
